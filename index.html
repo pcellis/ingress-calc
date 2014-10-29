@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Ingress AP Calculator</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+		<script type="text/javascript" src="ingressAP.js"></script>
+	</head>
+	<body ng-app="ingressAP" ng-controller="IngressController as ingress">
+		<p><strong>Note:</strong> Scoring currently takes into consideration the double AP event for Ingress' anniversary, through November 15, 2014.</p>
+		<p><label>Current AP Amount:</label> <input type="number" ng-model="ingress.currentAPLevel" min="0" placeholder="Enter Total AP"/> (level {{ingress.getLevel()}})</p>
+		<p>Your next level is level {{ingress.getLevel() + 1 | number}}.</p>
+		<p>You need {{ingress.ingressLevels[ingress.getLevel()] | number}} AP total to get there ({{ingress.remainingAPToLevel() | number}} more AP). To get there, you can:</p>
+		<table border="1">
+			<thead>
+				<tr>
+					<td valign="bottom"><strong>Action</strong></td>
+					<td valign="bottom"><strong>Reward Amount<br/>(per action)</strong></td>
+					<td valign="bottom"><strong>Total AP<br/>Awarded</strong></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('HACK_ENEMY_PORTAL')"
+						when="{'one': 'Hack 1 enemy portal',
+						    'other': 'Hack {} enemy portals'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("HACK_ENEMY_PORTAL")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("HACK_ENEMY_PORTAL") * ingress.getAPAmount("HACK_ENEMY_PORTAL") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('RECHARGE_PORTAL')"
+						when="{'one': 'Recharge 1 portal',
+						    'other': 'Recharge {} portals'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("RECHARGE_PORTAL")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("RECHARGE_PORTAL") * ingress.getAPAmount("RECHARGE_PORTAL") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('PLACE_RESONATOR')"
+						when="{'one': 'Place 1 resonator',
+						    'other': 'Place {} resonators'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("PLACE_RESONATOR")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("PLACE_RESONATOR") * ingress.getAPAmount("PLACE_RESONATOR") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('UPGRADE_OTHER_RESONATOR')"
+						when="{'one': 'Upgrade someone else\'s resonator',
+						    'other': 'Upgrade {} resonators belonging to someone else'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("UPGRADE_OTHER_RESONATOR")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("UPGRADE_OTHER_RESONATOR") * ingress.getAPAmount("UPGRADE_OTHER_RESONATOR") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('CAPTURE_PORTAL')"
+						when="{'one': 'Capture 1 portal (place first resonator)',
+						    'other': 'Capture {} portals (place first resonator)'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("CAPTURE_PORTAL")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("CAPTURE_PORTAL") * ingress.getAPAmount("CAPTURE_PORTAL") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('COMPLETE_PORTAL')"
+						when="{'one': 'Complete 1 portal (place eighth resonator)',
+						    'other': 'Complete {} portals (place eighth resonator)'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("COMPLETE_PORTAL")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("COMPLETE_PORTAL") * ingress.getAPAmount("COMPLETE_PORTAL") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('LINK_PORTALS')"
+						when="{'one': 'Create 1 portal link',
+						    'other': 'Create {} portal links'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("LINK_PORTALS")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("LINK_PORTALS") * ingress.getAPAmount("LINK_PORTALS") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('CONTROL_FIELD')"
+						when="{'one': 'Create 1 control field',
+						    'other': 'Create {} control fields'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("CONTROL_FIELD")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("CONTROL_FIELD") * ingress.getAPAmount("CONTROL_FIELD") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('DESTROY_RESONATOR')"
+						when="{'one': 'Destroy 1 resonator',
+						    'other': 'Destroy {} resonators'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("DESTROY_RESONATOR")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("DESTROY_RESONATOR") * ingress.getAPAmount("DESTROY_RESONATOR") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('DESTROY_LINK')"
+						when="{'one': 'Destroy 1 portal link',
+						    'other': 'Destroy {} portal links'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("DESTROY_LINK")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("DESTROY_LINK") * ingress.getAPAmount("DESTROY_LINK") | number}} AP</td>
+				</tr>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('DESTROY_CONTROL_FIELD')"
+						when="{'one': 'Destroy 1 control field',
+						    'other': 'Destroy {} control fields'}">
+						</ng-pluralize>
+					</td>
+					<td>{{ingress.getAPAmount("DESTROY_CONTROL_FIELD")}} AP</td>
+					<td>{{ingress.numActionsForNextLevel("DESTROY_CONTROL_FIELD") * ingress.getAPAmount("DESTROY_CONTROL_FIELD") | number}} AP</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>You can also perform the following operations in sequence:</p>
+		<table border="1">
+			<thead>
+				<tr>
+					<td valign="bottom"><strong>Action</strong></td>
+					<td valign="bottom"><strong>Reward Amount<br/>(per sequence)</strong></td>
+					<td valign="bottom"><strong>Total AP<br/>Rewarded</strong></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<ng-pluralize count="ingress.numActionsForNextLevel('CAPTURE_PORTAL|PLACE_RESONATOR|COMPLETE_PORTAL')"
+						when="{'one': 'Capture and completely upgrade 1 portal',
+						    'other': 'Capture and completely upgrade {} portals'}">
+						</ng-pluralize>
+					</td>
+					<td>
+						{{ingress.getAPAmount("CAPTURE_PORTAL") + ingress.getAPAmount("PLACE_RESONATOR") + ingress.getAPAmount("COMPLETE_PORTAL")}} AP<br/>
+						<small>
+							{{ingress.getAPAmount("CAPTURE_PORTAL")}} AP (first resonator)<br/>
+							{{ingress.getAPAmount("PLACE_RESONATOR")}} AP (second through seventh resonator)<br/>
+							{{ingress.getAPAmount("COMPLETE_PORTAL")}} AP (eighth resonator)
+						</small>
+					</td>
+					<td>
+						{{(ingress.getAPAmount("CAPTURE_PORTAL") + ingress.getAPAmount("PLACE_RESONATOR") + ingress.getAPAmount("COMPLETE_PORTAL")) * ingress.numActionsForNextLevel('CAPTURE_PORTAL|PLACE_RESONATOR|COMPLETE_PORTAL')}} AP
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</script>
